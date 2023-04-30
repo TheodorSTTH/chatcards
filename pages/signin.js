@@ -18,14 +18,22 @@ export default function signin() {
             .signInWithPopup(new firebase.auth.GoogleAuthProvider);
             console.log({...userCredentials});
             console.log({...userCredentials.user});
-            await firebase.firestore().collection("users").doc(userCredentials.user.uid).set({ 
-                collections: [],
-                uid: userCredentials.user.uid,
-                email: userCredentials.user.email,
-                name: userCredentials.user.displayName,
-                provider: userCredentials.user.providerData[0].providerId,
-                photoUrl: userCredentials.user.photoURL
-            }) // ! FIX THIS
+            firebase.firestore().collection("users").doc(userCredentials.user.uid).get().then(async (doc) => {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data());
+                }
+                else {
+                    await firebase.firestore().collection("users").doc(userCredentials.user.uid).set({ 
+                        collections: [],
+                        uid: userCredentials.user.uid,
+                        email: userCredentials.user.email,
+                        name: userCredentials.user.displayName,
+                        provider: userCredentials.user.providerData[0].providerId,
+                        photoUrl: userCredentials.user.photoURL
+                    })
+                }
+            })
+
             router.replace("/dashboard")
         }
         catch (err) {

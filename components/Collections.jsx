@@ -21,7 +21,7 @@ export default function Collections() {
     }, [])
     return <div className="flex flex-wrap gap-8">
         {
-            collections.length ? 
+            collections && collections.length ? 
             [...collections].reverse().map((id, i) => <CollectionPreview collectionId={id} key={i}/>)
             :
             <div >
